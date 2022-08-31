@@ -19,6 +19,8 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, "Phone number is required"]
     }
+}, {
+    timestamps: true
 })
 
 const model = mongoose.model("User", userSchema);
