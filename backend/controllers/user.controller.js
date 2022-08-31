@@ -62,6 +62,14 @@ exports.getUserById = async (req, res) => {
 exports.updateUserById = async (req, res) => {
     try {
         const id = req.params.id;
+
+        const exist = await getById(id);
+        if (!exist) {
+            return res.status(404).json({
+                message: "No user found!",
+            })
+        }
+
         const document = {
             name: req.body.name,
             username: req.body.username,
@@ -87,6 +95,13 @@ exports.updateUserById = async (req, res) => {
 exports.deleteUserById = async (req, res) => {
     try {
         const id = req.params.id;
+
+        const exist = await getById(id);
+        if (!exist) {
+            return res.status(404).json({
+                message: "No user found!",
+            })
+        }
 
         const user = await remove(id);
         res.status(200).json({

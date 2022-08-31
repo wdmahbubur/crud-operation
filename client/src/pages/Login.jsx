@@ -7,7 +7,7 @@ const Login = () => {
   return (
     <Container className="mt-5">
       <div className="bg-light w-50 p-5 mx-auto">
-        <h4 className="text-center">Login</h4>
+        <h4 className="text-center">Login </h4>
         <form onSubmit={login}>
           <div className="mb-3">
             <label htmlFor="email">Email</label>

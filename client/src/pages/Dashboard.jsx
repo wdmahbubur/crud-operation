@@ -2,11 +2,15 @@ import axios from "axios";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { Button, Col, Container, Modal, Row, Table } from "react-bootstrap";
+import { Button, Container, Table } from "react-bootstrap";
+import AddNewUser from "../components/AddNewUser";
+import UpdateUser from "../components/UpdateUser";
 
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [openAddUser, setOpenAddUser] = useState(false);
+  const [openUpdateUser, setOpenUpdateUser] = useState(false);
+  const [updateUserId, setUpdateUserId] = useState(null);
 
   useEffect(() => {
     getUsers();
@@ -20,6 +24,12 @@ const Dashboard = () => {
 
   const handleOpenAddUser = () => setOpenAddUser(true);
   const handleCloseAddUser = () => setOpenAddUser(false);
+
+  const handleOpenUpdateUser = (id) => {
+    setUpdateUserId(id);
+    setOpenUpdateUser(true);
+  };
+  const handleCloseUpdateUser = () => setOpenUpdateUser(false);
 
   const addUser = (e) => {
     e.preventDefault();
@@ -46,9 +56,46 @@ const Dashboard = () => {
       });
   };
 
-  const updateUser = () => {};
+  const updateUser = (e) => {
+    e.preventDefault();
 
-  const deleteUser = () => {};
+    const name = e.target.name.value;
+    const email = e.target.email.value;
+    const username = e.target.username.value;
+    const phone = e.target.phone.value;
+
+    axios
+      .put(`${import.meta.env.VITE_BACKEND_URL}users/update/${updateUserId}`, {
+        name,
+        email,
+        username,
+        phone,
+      })
+      .then((res) => {
+        handleCloseUpdateUser();
+        setUsers(
+          users.map((user) =>
+            user._id === updateUserId ? res.data.user : user
+          )
+        );
+        alert(res.data.message);
+      })
+      .catch((err) => {
+        alert(err.response.data.message);
+      });
+  };
+
+  const deleteUser = (id) => {
+    axios
+      .delete(`${import.meta.env.VITE_BACKEND_URL}users/delete/${id}`)
+      .then((res) => {
+        setUsers(users.filter((user) => user._id !== id));
+        alert(res.data.message);
+      })
+      .catch((err) => {
+        alert(err.response.data.message);
+      });
+  };
   return (
     <Container className="mt-5">
       <div className="d-flex justify-content-between">
@@ -77,10 +124,18 @@ const Dashboard = () => {
               <td>{user?.email}</td>
               <td>{user?.phone}</td>
               <td>
-                <Button variant="primary" size="sm">
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => handleOpenUpdateUser(user._id)}
+                >
                   Edit
                 </Button>{" "}
-                <Button variant="danger" size="sm">
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={() => deleteUser(user._id)}
+                >
                   Delete
                 </Button>{" "}
               </td>
@@ -88,59 +143,17 @@ const Dashboard = () => {
           ))}
         </tbody>
       </Table>
-      <Modal show={openAddUser} onHide={handleCloseAddUser}>
-        <Modal.Header closeButton>
-          <Modal.Title>Add New User</Modal.Title>
-        </Modal.Header>
-        <form onSubmit={addUser}>
-          <Modal.Body>
-            <div className="mb-3">
-              <label htmlFor="name">Name</label>
-              <input
-                type="text"
-                name="name"
-                id="name"
-                className="form-control"
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="username">Username</label>
-              <input
-                type="text"
-                name="username"
-                id="username"
-                className="form-control"
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="email">Email</label>
-              <input
-                type="text"
-                name="email"
-                id="email"
-                className="form-control"
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="phone">Phone</label>
-              <input
-                type="text"
-                name="phone"
-                id="phone"
-                className="form-control"
-              />
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="danger" onClick={handleCloseAddUser}>
-              Close
-            </Button>
-            <Button variant="success" type="submit">
-              Save
-            </Button>
-          </Modal.Footer>
-        </form>
-      </Modal>
+      <AddNewUser
+        openAddUser={openAddUser}
+        handleCloseAddUser={handleCloseAddUser}
+        addUser={addUser}
+      />
+      <UpdateUser
+        openUpdateUser={openUpdateUser}
+        handleCloseUpdateUser={handleCloseUpdateUser}
+        updateUser={updateUser}
+        updateUserId={updateUserId}
+      />
     </Container>
   );
 };
