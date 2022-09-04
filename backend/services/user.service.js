@@ -1,5 +1,4 @@
 const User = require("../models/user.model");
-const { options } = require("../routes/v1/user.route");
 
 const create = async (document) => {
     try {
