@@ -64,3 +64,21 @@ exports.login = async (req, res) => {
         })
     }
 }
+
+
+exports.generateAccessToken = async (req, res) => {
+    try {
+        const admin = req.admin;
+        const accessToken = await admin.createAccessToken();
+
+        res.status(200).json({
+            accessToken
+        })
+    }
+    catch (err) {
+        console.log(err.message);
+        res.status(500).json({
+            message: err.message
+        })
+    }
+}
