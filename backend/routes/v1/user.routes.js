@@ -2,7 +2,9 @@ const router = require("express").Router();
 
 const { addUser, getUsers, getUserById, updateUserById, deleteUserById } = require("../../controllers/user.controller");
 
-router.post("/add", addUser);
+const { verifyAccessToken } = require("../../middleware/admin.middleware");
+
+router.post("/add", verifyAccessToken, addUser);
 
 router.get("/", getUsers);
 router.get("/:id", getUserById);

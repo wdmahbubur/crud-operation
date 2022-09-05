@@ -42,9 +42,19 @@ exports.login = async (req, res) => {
         if (!isPasswordMatch) {
             return res.status(400).json({ message: "Password is incorrect!" });
         }
-        res.status(201).json({
+
+        const accessToken = await admin.createAccessToken();
+        const refreshToken = await admin.createRefreshToken();
+
+
+        res.status(200).cookie("refreshToken", refreshToken, {
+            expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+            // Forces to use https in production
+            secure: process.env.NODE_ENV === 'production' ? true : false
+        }).json({
             message: "Admin login successful",
-            admin: admin
+            admin: admin,
+            accessToken, refreshToken
         });
     }
     catch (err) {

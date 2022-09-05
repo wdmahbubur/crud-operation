@@ -1,4 +1,4 @@
-const Admin = require("../models/admin.models");
+const Admin = require("../models/admin.model");
 
 exports.save = async (document) => {
     try {
