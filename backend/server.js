@@ -8,8 +8,24 @@ const cookieParser = require("cookie-parser");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+var whitelist = [
+    "*",
+    "http://127.0.0.1:5173",
+];
+var corsOptions = {
+    origin: function (origin, callback) {
+        // console.log(origin);
+        if (whitelist.indexOf("*") !== -1) {
+            callback(null, true);
+        } else {
+            callback("You are not allowed to access these resources");
+        }
+    },
+    credentials: true
+};
 
-app.use(cors());
+app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use(cookieParser());
 

@@ -1,22 +1,27 @@
 import { useState } from "react";
 import { createContext } from "react";
-import axios from "axios";
+import Axios from "../Axios";
 
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState({});
 
-  const login = (e) => {
+  const login = async (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
 
-    const res = axios.post("/login", {
+    const res = await Axios.post("/admin/login", {
       email,
       password,
     });
-    const data = res.data;
+    const data = res.data?.admin;
+    console.log(res.data);
+    localStorage.setItem(
+      "crud-operation-access-token",
+      `Bearer ${res.data.accessToken}`
+    );
     setUser(data);
   };
 

@@ -1,4 +1,4 @@
-import axios from "axios";
+import Axios from "../Axios";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -13,11 +13,9 @@ const UpdateUser = ({
   const [user, setUser] = useState({});
   useEffect(() => {
     if (updateUserId)
-      axios
-        .get(`${import.meta.env.VITE_BACKEND_URL}users/${updateUserId}`)
-        .then((res) => {
-          setUser(res.data.user);
-        });
+      Axios.get(`/users/${updateUserId}`).then((res) => {
+        setUser(res.data.user);
+      });
   }, [updateUserId]);
 
   return (

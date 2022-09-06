@@ -1,9 +1,17 @@
 import React, { useContext } from "react";
+import { useEffect } from "react";
 import { Button, Container } from "react-bootstrap";
 import { AuthContext } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const { login, user } = useContext(AuthContext);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (user?._id) {
+      navigate("/dashboard");
+    }
+  }, [user]);
   return (
     <Container className="mt-5">
       <div className="bg-light w-50 p-5 mx-auto">

@@ -1,4 +1,4 @@
-import axios from "axios";
+import Axios from "../Axios";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -17,7 +17,7 @@ const Dashboard = () => {
   }, []);
 
   const getUsers = () => {
-    axios.get(`${import.meta.env.VITE_BACKEND_URL}users/`).then((res) => {
+    Axios.get(`/users/`).then((res) => {
       setUsers(res.data.users);
     });
   };
@@ -39,13 +39,12 @@ const Dashboard = () => {
     const username = e.target.username.value;
     const phone = e.target.phone.value;
 
-    axios
-      .post(`${import.meta.env.VITE_BACKEND_URL}users/add`, {
-        name,
-        email,
-        username,
-        phone,
-      })
+    Axios.post(`/users/add`, {
+      name,
+      email,
+      username,
+      phone,
+    })
       .then((res) => {
         handleCloseAddUser();
         setUsers([...users, res.data.user]);
@@ -64,13 +63,12 @@ const Dashboard = () => {
     const username = e.target.username.value;
     const phone = e.target.phone.value;
 
-    axios
-      .put(`${import.meta.env.VITE_BACKEND_URL}users/update/${updateUserId}`, {
-        name,
-        email,
-        username,
-        phone,
-      })
+    Axios.put(`/users/update/${updateUserId}`, {
+      name,
+      email,
+      username,
+      phone,
+    })
       .then((res) => {
         handleCloseUpdateUser();
         setUsers(
@@ -86,8 +84,7 @@ const Dashboard = () => {
   };
 
   const deleteUser = (id) => {
-    axios
-      .delete(`${import.meta.env.VITE_BACKEND_URL}users/delete/${id}`)
+    Axios.delete(`/users/delete/${id}`)
       .then((res) => {
         setUsers(users.filter((user) => user._id !== id));
         alert(res.data.message);
