@@ -51,7 +51,11 @@ const Dashboard = () => {
         alert(res.data.message);
       })
       .catch((err) => {
-        alert(err.response.data.message);
+        if (err.response.status === 401) {
+          console.log(err.response.data.message);
+        } else {
+          alert(err.response.data.message);
+        }
       });
   };
 
@@ -79,7 +83,11 @@ const Dashboard = () => {
         alert(res.data.message);
       })
       .catch((err) => {
-        alert(err.response.data.message);
+        if (err.response.status === 401) {
+          console.log(err.response.data.message);
+        } else {
+          alert(err.response.data.message);
+        }
       });
   };
 
@@ -90,9 +98,22 @@ const Dashboard = () => {
         alert(res.data.message);
       })
       .catch((err) => {
-        alert(err.response.data.message);
+        if (err.response.status === 401) {
+          console.log(err.response.data.message);
+        } else {
+          alert(err.response.data.message);
+        }
       });
   };
+  // const setCookie = () => {
+  //   Axios.get("http://localhost:5000/cookie")
+  //     .then((res) => {
+  //       alert(res.data);
+  //     })
+  //     .catch((err) => {
+  //       alert(err.response.data);
+  //     });
+  // };
   return (
     <Container className="mt-5">
       <div className="d-flex justify-content-between">
@@ -100,6 +121,9 @@ const Dashboard = () => {
         <Button variant="success" size="sm" onClick={handleOpenAddUser}>
           Add New
         </Button>
+        {/* <Button variant="success" size="sm" onClick={setCookie}>
+          Set Cookie
+        </Button> */}
       </div>
       <Table striped bordered hover className="mt-2">
         <thead>

@@ -46,12 +46,13 @@ exports.login = async (req, res) => {
         const accessToken = await admin.createAccessToken();
         const refreshToken = await admin.createRefreshToken();
 
-
         res.cookie("refreshToken", refreshToken, {
             expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-            httpOnly: true,
+            // httpOnly: true,
             // Forces to use https in production
-            secure: process.env.NODE_ENV === 'production' ? true : false
+            // secure: process.env.NODE_ENV === 'production' ? true : false
+            secure: true,
+            sameSite: 'none'
         }).json({
             message: "Admin login successful",
             admin: admin,

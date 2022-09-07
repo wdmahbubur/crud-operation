@@ -32,6 +32,17 @@ app.use(cookieParser());
 app.use("/api/v1/users", require("./routes/v1/user.routes"));
 app.use("/api/v1/admin", require("./routes/v1/admin.routes"));
 
+// app.get("/cookie", async (req, res) => {
+//     console.log(req.cookies)
+//     res.cookie("auth", "true", {
+//         expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+//         httpOnly: true,
+//         // Forces to use https in production
+//         secure: true,
+//         sameSite: 'none'
+//     }).json("cookie set");
+// })
+
 app.use(
     cookieSession({ name: "crud-operation", keys: ["refreshToken"], maxAge: 24 * 60 * 60 * 1000 })
 );
