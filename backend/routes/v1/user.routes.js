@@ -9,9 +9,9 @@ router.post("/add", verifyAccessToken, addUser);
 router.get("/", getUsers);
 router.get("/:id", getUserById);
 
-router.put("/update/:id", updateUserById);
+router.put("/update/:id", verifyAccessToken, updateUserById);
 
-router.delete("/delete/:id", deleteUserById);
+router.delete("/delete/:id", verifyAccessToken, deleteUserById);
 
 
 

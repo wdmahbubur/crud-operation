@@ -46,11 +46,15 @@ const Dashboard = () => {
       phone,
     })
       .then((res) => {
-        handleCloseAddUser();
-        setUsers([...users, res.data.user]);
-        alert(res.data.message);
+        if (res.status === 201) {
+          handleCloseAddUser();
+          console.log(res);
+          setUsers([...users, res.data.user]);
+          alert(res.data.message);
+        }
       })
       .catch((err) => {
+        console.log(err);
         if (err.response.status === 401) {
           console.log(err.response.data.message);
         } else {
@@ -105,15 +109,6 @@ const Dashboard = () => {
         }
       });
   };
-  // const setCookie = () => {
-  //   Axios.get("http://localhost:5000/cookie")
-  //     .then((res) => {
-  //       alert(res.data);
-  //     })
-  //     .catch((err) => {
-  //       alert(err.response.data);
-  //     });
-  // };
   return (
     <Container className="mt-5">
       <div className="d-flex justify-content-between">
@@ -121,9 +116,6 @@ const Dashboard = () => {
         <Button variant="success" size="sm" onClick={handleOpenAddUser}>
           Add New
         </Button>
-        {/* <Button variant="success" size="sm" onClick={setCookie}>
-          Set Cookie
-        </Button> */}
       </div>
       <Table striped bordered hover className="mt-2">
         <thead>

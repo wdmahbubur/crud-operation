@@ -1,4 +1,5 @@
 const { save, findOne } = require("../services/admin.service");
+const Token = require("../models/token.model");
 
 exports.createAdmin = async (req, res) => {
     try {
@@ -67,6 +68,24 @@ exports.login = async (req, res) => {
     }
 }
 
+exports.getLoggedAdmin = async (req, res) => {
+    try {
+        const admin = req.admin;
+        const accessToken = await admin.createAccessToken();
+
+        res.status(200).json({
+            admin,
+            accessToken
+        })
+    }
+    catch (err) {
+        console.log(err.message);
+        res.status(500).json({
+            message: err.message
+        })
+    }
+}
+
 
 exports.generateAccessToken = async (req, res) => {
     try {
@@ -82,5 +101,27 @@ exports.generateAccessToken = async (req, res) => {
         res.status(500).json({
             message: err.message
         })
+    }
+}
+
+
+exports.logout = async (req, res) => {
+    try {
+        let token = req.cookies.refreshToken;
+        if (!token) {
+            return res.status(404).json({ message: "User already logged out" })
+        }
+        const verifyToken = await Token.findOneAndDelete({ token: token });
+        if (verifyToken) {
+            return res.clearCookie("refreshToken", {
+                secure: true,
+                sameSite: 'none'
+            }).json({ message: "Logged Out Successful" });
+        }
+        return res.json({ message: "Invalid Token" });
+    }
+    catch (err) {
+        console.log(err.message);
+        res.status(500).json({ message: "An error while logout admin" });
     }
 }

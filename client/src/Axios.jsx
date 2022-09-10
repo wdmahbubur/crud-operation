@@ -1,19 +1,29 @@
 import axios from "axios";
 
-const storeLocalStorage = async (key, value) => {
-  localStorage.setItem(key, value);
-};
-
 const Axios = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,
   withCredentials: true,
   headers: {
-    authorization: localStorage.getItem("crud-operation-access-token"),
     Accept: "application/json",
     "Content-Type": "application/json",
     "Access-Control-Allow-Credentials": true,
   },
 });
+
+//request interceptor to add the auth token header to requests
+Axios.interceptors.request.use(
+  (config) => {
+    const accessToken = localStorage.getItem("crud-operation-access-token");
+    if (accessToken) {
+      config.headers.authorization = accessToken;
+    }
+    return config;
+  },
+  (error) => {
+    console.log(error);
+    return Promise.reject(error);
+  }
+);
 
 //response interceptor to refresh token on receiving token expired error
 Axios.interceptors.response.use(
@@ -22,6 +32,7 @@ Axios.interceptors.response.use(
   },
   async function (error) {
     const originalRequest = error.config;
+    console.log(error.response.status);
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       const res = await Axios.get(
@@ -33,7 +44,6 @@ Axios.interceptors.response.use(
           "crud-operation-access-token",
           `Bearer ${res.data.accessToken}`
         );
-        console.log("Access Token Refreshed!");
         return Axios(originalRequest);
       }
     }
